@@ -39,7 +39,7 @@ export default {
             formData.append('author', this.userInfo.id)
             formData.append('title', this.title)
             axios.post('http://localhost:3000/api/article', formData)
-            console.log(this.file)
+            this.$router.push('/')
         },
         handleText(event) {
             this.text = event.target.value
