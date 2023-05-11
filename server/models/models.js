@@ -11,7 +11,9 @@ const User = sequelize.define('user', {
 const Article = sequelize.define('article', {
     id: {type:DataTypes.INTEGER, primaryKey:true, autoIncrement: true, unique: true},
     author: {type: DataTypes.INTEGER},
-    text: {type: DataTypes.TEXT}
+    text: {type: DataTypes.TEXT},
+    title: {type: DataTypes.TEXT},
+    image: {type: DataTypes.STRING},
 })
 
 User.hasMany(Article, {as: 'article', foreignKey: 'author'})

@@ -27,13 +27,18 @@ class UserController {
         } else return res.status(403).json({message: 'Invalid login or password'})
     }
 
-    async checkAuth(req, res){
+    async checkAuth(req, res) {
         const authHeader = req.headers.authorization
         const token = authHeader && authHeader.split(" ")[1]
-        const decoded = jwt.verify(token, 'secret',async (err, decoded) =>{
-            const {login} = decoded
-            return res.status(200).json({login: login})
+
+        const decoded = jwt.verify(token, 'secret')
+        const {login} = decoded
+        const user = await User.findOne({
+            where: {
+                login: login
+            }
         })
+        return res.status(200).json(user)
     }
 }
 

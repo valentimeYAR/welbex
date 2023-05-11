@@ -13,7 +13,7 @@
           <div class="right" v-if="token">
               <p>Пользователь:</p>
               <span class="login">{{userInfo.login}}</span>
-              <p class="create-article">Создать запись</p>
+              <a href="/create-article/" class="create-article">Создать запись</a>
           </div>
       </div>
   </div>
@@ -40,7 +40,9 @@ export default {
             if(response.status === 200){
                 this.token = true
                 this.userInfo = response.data
-            }else console.log(response.status)
+            }else {
+                console.log(response.status)
+            }
         })
     }
 }
