@@ -36,20 +36,6 @@ class ArticleController {
         })
     }
 
-    // async getArticles(req, res) {
-    //     const articles = await Article.findAll({
-    //         include: {
-    //             model: User,
-    //             as: 'user',
-    //             attributes: ['login']
-    //         }
-    //     });
-    //     const transformedArticles = articles.map(article => {
-    //         const imageUrl = `http://localhost:3000/${article.image.replace(/\\/g, '/')}`
-    //         return {...article.toJSON(), imageUrl};
-    //     });
-    //     return res.status(200).json(transformedArticles);
-    // }
     async getArticles(req, res) {
         const page = parseInt(req.query.page) || 1;
         const perPage = parseInt(req.query.perPage) || 20;
@@ -58,7 +44,7 @@ class ArticleController {
             const totalPages = Math.ceil(totalCount / perPage);
 
             const articles = await Article.findAll({
-                offset: (page-1) * perPage,
+                offset: (page - 1) * perPage,
                 limit: perPage,
                 include: {model: User, as: 'user', attributes: ['login']}
             })
@@ -75,6 +61,32 @@ class ArticleController {
             console.error(error);
             res.status(500).json({error: 'Internal Server Error'});
         }
+    }
+
+    async getArticle(req, res) {
+        const {id} = req.params;
+
+        const article = await Article.findOne({
+            where: {id: id},
+            include: {model: User, as: 'user', attributes: ['login']}
+        })
+        const imageUrl = `http://localhost:3000/${article.image.replace(/\\/g, '/')}`;
+        const date = new Date(article.createdAt)
+        const year = date.getFullYear();
+        const month = ("0" + (date.getMonth() + 1)).slice(-2);
+        const day = ("0" + date.getDate()).slice(-2);
+        const formattedDate = year + "-" + month + "-" + day;
+        const transformedArticle = {
+            id: article.id,
+            title: article.title,
+            text: article.text,
+            imageUrl: imageUrl,
+            createdAt: formattedDate,
+            user: {
+                login: article.user.login
+            }
+        };
+        return res.json(transformedArticle);
     }
 }
 

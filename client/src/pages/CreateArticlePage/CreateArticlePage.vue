@@ -4,7 +4,7 @@
             <h2 class="title">Добавить статью</h2>
             <form enctype="multipart/form-data" @submit.prevent="submit" class="form">
                 <input class="article-title" v-model="title" @input="handleTitle" placeholder="Заголовок...">
-                <textarea class="textarea" @input="handleText" v-model="text" placeholder="Основной текст..."/>
+                <textarea class="textarea" v-model="text" placeholder="Основной текст..."/>
                 <div class="input-file">
                     <p class="label">Выберите обложку статьи: </p>
                     <input type="file" @change="handleFile" name="file" class="input">

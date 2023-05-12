@@ -12,7 +12,7 @@ router.get('/user/auth', UserController.checkAuth)
 // Article
 router.post('/article/', ArticleController.addArticle)
 router.get('/articles', ArticleController.getArticles)
-
+router.get('/article/:id', ArticleController.getArticle)
 
 
 module.exports = router

@@ -1,12 +1,13 @@
 <template>
-    <div class="article-container">
+    <div class="article-container" @click="redirectOnArticle">
         <div class="article-image-block">
             <img :src="article.imageUrl" alt="" class="article-img">
         </div>
         <div class="text-block">
             <h2 class="article-title">{{ article.title }}</h2>
             <p class="article-text">
-                {{ cutText(article.text, 1000) }}<br><a :href="'/article/' + this.article.id" v-if="article.text.length >= 1000"
+                {{ cutText(article.text, 1000) }}<br><a :href="'/article/' + this.article.id"
+                                                        v-if="article.text.length >= 1000"
                                                         class="article-more">Читать дальше</a>
             </p>
             <p class="article-author">Автор статьи: {{ article.user.login }}</p>
@@ -32,6 +33,9 @@ export default {
             } else {
                 return text.slice(0, maxlength) + "..."
             }
+        },
+        redirectOnArticle(){
+            this.$router.push(`/article/${this.article.id}`)
         }
     },
 }
@@ -45,6 +49,7 @@ export default {
   padding: 20px;
   gap: 0 20px;
   position: relative;
+  cursor: pointer;
 }
 
 .article-img {
