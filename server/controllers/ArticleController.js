@@ -22,16 +22,20 @@ class ArticleController {
             if (err) {
                 console.log(err)
             } else {
-                const {author, text, title} = req.body;
-                const ext = path.extname(req.file.originalname);
-                const imageFilePath = req.file.path;
-                const article = await Article.create({
-                    author: author,
-                    text: text,
-                    image: imageFilePath,
-                    title: title
-                });
-                return res.status(200).end();
+                try {
+                    const {author, text, title} = req.body;
+                    const ext = path.extname(req.file.originalname);
+                    const imageFilePath = req.file.path;
+                    const article = await Article.create({
+                        author: author,
+                        text: text,
+                        image: imageFilePath,
+                        title: title
+                    });
+                    return res.status(200).end();
+                } catch (e) {
+                    console.log(e)
+                }
             }
         })
     }
@@ -64,29 +68,56 @@ class ArticleController {
     }
 
     async getArticle(req, res) {
-        const {id} = req.params;
+        try {
+            const {id} = req.params;
 
-        const article = await Article.findOne({
-            where: {id: id},
-            include: {model: User, as: 'user', attributes: ['login']}
-        })
-        const imageUrl = `http://localhost:3000/${article.image.replace(/\\/g, '/')}`;
-        const date = new Date(article.createdAt)
-        const year = date.getFullYear();
-        const month = ("0" + (date.getMonth() + 1)).slice(-2);
-        const day = ("0" + date.getDate()).slice(-2);
-        const formattedDate = year + "-" + month + "-" + day;
-        const transformedArticle = {
-            id: article.id,
-            title: article.title,
-            text: article.text,
-            imageUrl: imageUrl,
-            createdAt: formattedDate,
-            user: {
-                login: article.user.login
-            }
-        };
-        return res.json(transformedArticle);
+            const article = await Article.findOne({
+                where: {id: id},
+                include: {model: User, as: 'user', attributes: ['login']}
+            })
+            const imageUrl = `http://localhost:3000/${article.image.replace(/\\/g, '/')}`;
+            const date = new Date(article.createdAt)
+            const year = date.getFullYear();
+            const month = ("0" + (date.getMonth() + 1)).slice(-2);
+            const day = ("0" + date.getDate()).slice(-2);
+            const formattedDate = year + "-" + month + "-" + day;
+            const transformedArticle = {
+                id: article.id,
+                title: article.title,
+                text: article.text,
+                imageUrl: imageUrl,
+                createdAt: formattedDate,
+                user: {
+                    login: article.user.login
+                }
+            };
+            return res.json(transformedArticle);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async editArticle(req, res) {
+        try {
+            const {id} = req.params
+            const {title, text} = req.body
+            const article = await Article.findOne({
+                where: {id: id},
+            })
+            article.title = title
+            article.text = text
+            await article.save()
+            return res.status(200).json({message: 'Article successfully updated'})
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async deleteArticle(req, res) {
+        const {id} = req.params
+        const article = await Article.findByPk(id)
+        await article.destroy()
+        return res.status(200).json({message: 'Article successfully deleted'})
     }
 }
 

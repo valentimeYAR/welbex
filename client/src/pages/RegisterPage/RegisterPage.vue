@@ -17,7 +17,7 @@
                     @input="inputPassword"
             />
             <div class="buttons">
-                <a href="/" class="accept-btn" @click="registerUser">Регистрация</a>
+                <p class="accept-btn" @click="registerUser">Регистрация</p>
             </div>
         </div>
     </div>
@@ -28,25 +28,27 @@ import axios from "axios";
 
 export default {
     name: "RegisterPage",
-    data(){
+    data() {
         return {
             login: "",
             password: "",
         }
     },
-    methods:{
-        inputLogin(e){
+    methods: {
+        inputLogin(e) {
             this.login = e.target.value
         },
-        inputPassword(e){
+        inputPassword(e) {
             this.password = e.target.value
         },
-        registerUser(){
+        registerUser() {
             axios.post('http://localhost:3000/api/user/register', {
                 login: this.login,
                 password: this.password
+            }).then((res) => {
+                this.$router.push('/login')
             })
-            this.$router.push('/login')
+
         }
     }
 }
@@ -90,6 +92,7 @@ export default {
   font-weight: 700;
   font-size: 20px;
   border: 1px solid white;
+  cursor: pointer;
 
   &:hover {
     background-color: transparent;

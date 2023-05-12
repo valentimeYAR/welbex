@@ -52,6 +52,7 @@ export default {
                 const {token} = res.data
                 localStorage.setItem('token', token)
             })
+            location.replace('/')
 
         }
     }

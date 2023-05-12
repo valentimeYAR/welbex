@@ -31,19 +31,23 @@ export default {
         }
     },
     beforeCreate() {
-        const token = localStorage.getItem("token");
-        axios.get('http://localhost:3000/api/user/auth',{
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        }).then(response => {
-            if(response.status === 200){
-                this.token = true
-                this.userInfo = response.data
-            }else {
-                console.log(response.status)
-            }
-        })
+        try{
+            const token = localStorage.getItem("token");
+            axios.get('http://localhost:3000/api/user/auth',{
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            }).then(response => {
+                if(response.status === 200){
+                    this.token = true
+                    this.userInfo = response.data
+                }else {
+                    console.log(response.status)
+                }
+            })
+        }catch(e){
+            console.log(e)
+        }
     }
 }
 </script>

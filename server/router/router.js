@@ -13,6 +13,8 @@ router.get('/user/auth', UserController.checkAuth)
 router.post('/article/', ArticleController.addArticle)
 router.get('/articles', ArticleController.getArticles)
 router.get('/article/:id', ArticleController.getArticle)
+router.put('/article/:id', ArticleController.editArticle)
+router.delete('/article/:id', ArticleController.deleteArticle)
 
 
 module.exports = router

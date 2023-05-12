@@ -5,12 +5,15 @@
         <div class="container">
             <div class="content-block">
                 <img :src="article.imageUrl" alt="" class="img">
-                <h2 class="title">{{ article.title }}</h2>
-                <p class="text">{{ article.text }}</p>
+                <h2 class="title" v-if="!edit">{{ article.title }}</h2>
+                <input type="text" v-model="article.title" class="edit-title" v-if="edit">
+                <p class="text" v-if="!edit">{{ article.text }}</p>
+                <textarea class="edit-text" v-model="article.text" v-if="edit"></textarea>
+                <button class="send-article" @click="sendArticle" v-if="edit">Сохранить изменения</button>
             </div>
         </div>
         <div class="edit-article" v-if="article.user.login === userInfo.login">
-            <svg width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="edit-svg">
+            <svg width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="edit-svg" @click="editArticle">
                 <title/>
                 <g id="Complete">
                     <g id="edit">
@@ -24,7 +27,7 @@
                     </g>
                 </g>
             </svg>
-            <svg width="30px" height="30px" viewBox="0 -0.5 21 21" xmlns="http://www.w3.org/2000/svg" class="delete-svg">
+            <svg width="30px" height="30px" viewBox="0 -0.5 21 21" xmlns="http://www.w3.org/2000/svg" @click="deleteArticle" class="delete-svg">
                 <defs>
                 </defs>
                 <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -51,6 +54,7 @@ export default {
         return {
             article: {},
             userInfo: {},
+            edit: false
         }
     },
     beforeCreate() {
@@ -71,6 +75,22 @@ export default {
             }
         })
     },
+    methods:{
+        editArticle(e){
+            this.edit = true
+        },
+        sendArticle(){
+            axios.put(`http://localhost:3000/api/article/${this.id}`, {
+                title: this.article.title,
+                text: this.article.text
+            })
+            this.edit = false
+        },
+        deleteArticle(){
+            axios.delete(`http://localhost:3000/api/article/${this.id}`)
+            this.$router.push('/')
+        }
+    }
 
 }
 </script>
@@ -79,6 +99,7 @@ export default {
 .wrapper {
     background-color: #0D1117;
     position: relative;
+    min-height: 100vh;
 }
 
 .container {
@@ -95,7 +116,7 @@ export default {
 
 .title {
     width: 1400px;
-    font-size: 50px;
+    font-size: 40px;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -139,6 +160,40 @@ export default {
     right: 50px;
     & svg{
         cursor: pointer;
+    }
+}
+.edit-title{
+    width: 1400px;
+    font-size: 30px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    background-color: #0D1117;
+    border: 1px solid white;
+}
+.edit-text{
+    resize: none;
+    width: 1400px;
+    height: 400px;
+    padding: 20px;
+    font-size: 18px;
+    border-radius: 10px;
+    color: white;
+    background-color: #0D1117;
+    border: 1px solid white;
+    overflow: auto;
+}
+.send-article{
+    padding: 20px;
+    background-color: green;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border-radius: 10px;
+    border: 1px solid green;
+    &:hover{
+        background-color: transparent;
     }
 }
 </style>
